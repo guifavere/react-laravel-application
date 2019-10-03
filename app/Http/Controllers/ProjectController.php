@@ -27,7 +27,7 @@ class ProjectController extends Controller
         ]);
 
         $project = Project::create([
-            'name' => $validatedData['data'],
+            'name' => $validatedData['name'],
             'description' => $validatedData['description'],
         ]);
 
