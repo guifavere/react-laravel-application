@@ -7,10 +7,16 @@ class SingleProject extends Component {
 
         this.state = {
             project: {},
-            tasks: []
+            tasks: [],
+            title: '',
+            errors: []
         }
 
         this.handleMarkProjectAsCompleted = this.handleMarkProjectAsCompleted.bind(this)
+        this.handleFieldChange = this.handleFieldChange.bind(this)
+        this.handleAddNewTask = this.handleAddNewTask.bind(this)
+        this.hasErrorFor = this.hasErrorFor.bind(this)
+        this.renderErrorFor = this.renderErrorFor.bind(this)
     }
 
     handleMarkProjectAsCompleted () {
@@ -18,6 +24,48 @@ class SingleProject extends Component {
 
         axios.put(`/api/projects/${this.state.project.id}`)
             .then(res => history.push('/'))
+    }
+
+    handleFieldChange (e) {
+        this.setState({
+            title: e.target.value
+        })
+    }
+
+    handleAddNewTask (e) {
+        e.preventDefault()
+
+        const task = {
+            title: this.state.title,
+            project_id: this.state.project.id
+        }
+
+        axios.post('/api/tasks', task)
+            .then(res => {
+                this.setState({ title: '' })
+                this.setState(prevState => ({
+                    tasks: prevState.tasks.concat(res.data)
+                }))
+            })
+            .catch(error => {
+                this.setState({
+                    errors: error.response.data.errors
+                })
+            })
+    }
+
+    hasErrorFor (field) {
+        return !!this.state.errors[field]
+    }
+
+    renderErrorFor (field) {
+        if (this.hasErrorFor(field)) {
+            return (
+                <span className='invalid-feedback'>
+                    <strong>{this.state.errors[field][0]}</strong>
+                </span>
+            )
+        }
     }
 
     componentDidMount () {
@@ -49,6 +97,22 @@ class SingleProject extends Component {
                                     Mark as completed
                                 </button>
                                 <hr />
+                                <form onSubmit={this.handleAddNewTask}>
+                                    <div className='input-group'>
+                                        <input
+                                            type='text'
+                                            name='title'
+                                            className={`form-control ${this.hasErrorFor('title') ? 'is-invalid' : ''}`}
+                                            placeholder='Task title'
+                                            value={this.state.title}
+                                            onChange={this.handleFieldChange}
+                                        />
+                                        <div className='input-group-append'>
+                                            <button className='btn btn-primary'>Add</button>
+                                        </div>
+                                        {this.renderErrorFor('title')}
+                                    </div>
+                                </form>
                                 <ul className='list-group mt-3'>
                                     {tasks.map(task => (
                                         <li
