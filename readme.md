@@ -2,7 +2,9 @@
   <strong>Laravel to-do list app with react</strong>
 </h1>
 
-Laravel application with react. Example taken from <a href="https://blog.pusher.com/react-laravel-application/" target="_blank" title="Using React in a Laravel application">pushers's post</a>
+Laravel application with react. Example taken from [pushers's post](https://blog.pusher.com/react-laravel-application).
+
+<img alt="React Laravel Application" src="https://i.imgur.com/5JEmfDe.png" title="React Laravel Application" />
 
 ## Installation
 
